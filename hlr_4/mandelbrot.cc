@@ -24,6 +24,7 @@ int mandelbrot(const complex &c, const float max_dist, const int max_iter) {
 
 int main(int argc, char **argv) {
   const int width = 4048, height = 4048;
+  // const int width = 8000, height = 8000;
   const float sx = 2.f / width;
   const float sy = 2.f / height;
   float m = 1.;
@@ -58,19 +59,27 @@ int main(int argc, char **argv) {
   stopwatch_calc.Start();
 
   // iterate over image pixels and calculate their value
+  // #pragma omp parallel for
+  // #pragma omp parallel for schedule(static, 8)
+  #pragma omp parallel for schedule(dynamic, 4)
+  // #pragma omp paralell for
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
       complex c(x0 + cx * (x - width / 2), y0 + cy * (y - height / 2));
 
       // scale to color pallet (value between 0 and 255 and invert)
       int iter = mandelbrot(c, max_dist, max_iter);
+
+      // get threak number
+      int thread_id = omp_get_thread_num();
+
       int color_val = max_color - nearbyint(((float)iter * color_scale));
       // optinal integer scaling
       // int color_val = max_color - (mandelbrot(c, max_dist, max_iter) * max_color / max_iter);
 
       image[4 * width * y + 4 * x + 0] = color_val; // R
       image[4 * width * y + 4 * x + 1] = color_val; // G
-      image[4 * width * y + 4 * x + 2] = thread_val; // B
+      image[4 * width * y + 4 * x + 2] = thread_val - thread_id * 30; // B value by thread num
       image[4 * width * y + 4 * x + 3] = 255;       // Alpha
     }
   }
