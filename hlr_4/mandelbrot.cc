@@ -23,8 +23,8 @@ int mandelbrot(const complex &c, const float max_dist, const int max_iter) {
 }
 
 int main(int argc, char **argv) {
-  const int width = 4048, height = 4048;
-  // const int width = 8000, height = 8000;
+  // const int width = 4048, height = 4048;
+  const int width = 8000, height = 8000; // changed size for better results
   const float sx = 2.f / width;
   const float sy = 2.f / height;
   float m = 1.;
@@ -59,10 +59,9 @@ int main(int argc, char **argv) {
   stopwatch_calc.Start();
 
   // iterate over image pixels and calculate their value
-  // #pragma omp parallel for
   // #pragma omp parallel for schedule(static, 8)
-  #pragma omp parallel for schedule(dynamic, 4)
-  // #pragma omp paralell for
+  // #pragma omp parallel for schedule(dynamic, 8)
+  // #pragma omp parallel for
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
       complex c(x0 + cx * (x - width / 2), y0 + cy * (y - height / 2));
