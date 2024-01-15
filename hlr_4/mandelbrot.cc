@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
   // iterate over image pixels and calculate their value
   // #pragma omp parallel for schedule(static, 8)
   // #pragma omp parallel for schedule(dynamic, 8)
-  // #pragma omp parallel for
+  #pragma omp parallel for
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
       complex c(x0 + cx * (x - width / 2), y0 + cy * (y - height / 2));
